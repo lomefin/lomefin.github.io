@@ -9,7 +9,7 @@ Rails 5 está pronto a salir y quiero aprovechar de documentar el desarrollo de 
 
 La idea es que los roles de usuarios de Bambinotes estén suscritos a un canal de noticias con el que puedan revisar algunos detalles de ésta, y que posteriormente puedan navegar a un blog más profesional si es necesario.
 
-El repositorio del proyecto está en GitHub: https://github.com/lomefin/nms
+El repositorio del proyecto está en GitHub: [https://github.com/lomefin/nms](https://github.com/lomefin/nms)
 
 Asumiremos que estamos desde un computador sin Rails 5, pero con RVM y Postgres ya instalado.
 
