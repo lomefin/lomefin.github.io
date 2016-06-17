@@ -1,9 +1,9 @@
-----
- -layout: post
- -title:  "Microservicio de noticias en Rails 5. Parte 1"
- -date:   2016-06-16 22:35:35 -0400
- -categories: rails5, tutorials
- ----
+---
+layout: post
+title:  "Microservicio de noticias en Rails 5. Parte 1"
+date:   2016-06-16 22:36:35 -0400
+categories: rails5 tutorials
+---
 
 Rails 5 está pronto a salir y quiero aprovechar de documentar el desarrollo de un microservicio de noticias con el cual queremos entregar algunas informaciones en nuestra plataforma Bambinotes.
 
@@ -15,11 +15,13 @@ Asumiremos que estamos desde un computador sin Rails 5, pero con RVM y Postgres 
 
 Primero, instalar ruby 2.3.1 -el más reciente al momento de escribir este artículo.
 
-{% highlight bash %}rvm use 2.3.1@nms --create{% endhighlight %}
+```bash
+rvm use 2.3.1@nms --create
+```
 
 Luego instalar rails 5 (5.0.0.rc1)
 
-```bash gem install rails --pre --no-ri --no-rdoc````
+```bash gem install rails --pre --no-ri --no-rdoc```
 
 Luego que se instale todo eso, creo el nuevo proyecto llamado nms.
 
@@ -71,7 +73,7 @@ rails db:migrate
 
 Ahora a implementarle algunos scopes.
 
-``` ruby
+```ruby
 class Post < ApplicationRecord
   scope :of_channel, -> (channel) { where(channel: channel) }
   scope :published, -> { where.not(published_at: nil) }
@@ -115,7 +117,7 @@ end
 
 Ya tenemos las rutas definidas, podemos revisarla en la consola de pry usando el comando __show-routes__.
 
-{% highlight %}
+{% highlight text%}
 
          Prefix Verb   URI Pattern                       Controller#Action
           posts GET    /:channel/posts(.:format)         posts#index
