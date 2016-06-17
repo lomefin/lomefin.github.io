@@ -1,3 +1,10 @@
+----
+ -layout: post
+ -title:  "Microservicio de noticias en Rails 5. Parte 1"
+ -date:   2016-06-16 22:32:35 -0400
+ -categories: rails5, tutorials
+ ----
+
 Rails 5 está pronto a salir y quiero aprovechar de documentar el desarrollo de un microservicio de noticias con el cual queremos entregar algunas informaciones en nuestra plataforma Bambinotes.
 
 La idea es que los roles de usuarios de Bambinotes estén suscritos a un canal de noticias con el que puedan revisar algunos detalles de ésta, y que posteriormente puedan navegar a un blog más profesional si es necesario.
@@ -8,7 +15,7 @@ Asumiremos que estamos desde un computador sin Rails 5, pero con RVM y Postgres 
 
 Primero, instalar ruby 2.3.1 -el más reciente al momento de escribir este artículo.
 
-[code lang="bash"]rvm use 2.3.1@nms --create[/code]
+{% highlight bash %}rvm use 2.3.1@nms --create{% endhighlight %}
 
 Luego instalar rails 5 (5.0.0.rc1)
 
@@ -27,7 +34,7 @@ createdb nms_test
 
 Luego agregué Pry para tener una mejor consola y rails_12factor para integrarme con Heroku
 
-```ruby
+{% highlight ruby %}
 group :development do
   gem 'pry-rails'
 end
@@ -35,26 +42,26 @@ end
 group :production do
   gem 'rails_12factor'
 end
-```
+{% endhighlight %}
 
 Vamos a dejar todo listo para Heroku de una vez, eso significa tener un Procfile funcionando.
 
 Procfile
 
-[code lang="bash"]
+{% highlight bash %}
 
 web: bundle exec puma -t 5:5 -p ${PORT:-3000} -e ${RACK_ENV:-development}
 
-[/code]
+{% endhighlight %}
 
 Ahora hacemos __bundle update__ y luego __heroku local__ y tendremos una aplicación lista para andar. En paralelo abro una nueva terminal para tener la consola andando a su vez con __rails c__.
 
 Luego vamos a crear el objeto Post que tendrá las noticias, siempre prefiero usar la clase News, pero como es un término plural se enreda todo, aparte Post es un elemento más genérico en los ejemplos.
 
-[code lang="bash"]
+{% highlight bash %}
 rails g model Post channel:string uuid:uuid options:json message:text title:text
 published_at:datetime meta:json url:string
-[/code]
+{% endhighlight %}
 
 Una de las novedades de Rails 5 es que el uso de rake disminuye en favor del uso de rails, por lo tanto para hacer esta migración hacemos
 
@@ -62,13 +69,13 @@ Una de las novedades de Rails 5 es que el uso de rake disminuye en favor del uso
 
 Ahora a implementarle algunos scopes.
 
-[code lang="ruby"]
+{% highlight ruby %}
 class Post < ApplicationRecord
   scope :of_channel, -> (channel) { where(channel: channel) }
   scope :published, -> { where.not(published_at: nil) }
   scope :incremental, -> { order(published_at: :desc) }
 end
-[/code]
+{% endhighlight %}
 
 Listo nuestro modelo! Por ahora estaré usando el scope __:published__ que luego será reemplazado por [AASM](https://github.com/aasm/aasm). Ahora los controladores (en verdad, EL controlador)
 
@@ -79,7 +86,7 @@ rails g controller posts
 El único controlador que tendremos hasta el momento será post_controller. __Nota:__ En el código habrá un controlador de administración, pero no hablaré de él aún hasta que tenga una implementación definida.
 
 Nuestro controlador tendrá esta forma
-[code lang="ruby"]
+{% highlight ruby %}
 
 class PostsController < ApplicationController
 
@@ -92,21 +99,21 @@ class PostsController < ApplicationController
   end
 
 end
-[/code]
+{% endhighlight %}
 
 Luego configuraremos las rutas para que podamos llegar a estos objetos.
 
-[code lang="ruby"]
+{% highlight ruby %}
 Rails.application.routes.draw do
   scope ':channel' do
     resources :posts, only: [:show, :index], param: :uuid
   end
 end
-[/code]
+{% endhighlight %}
 
 Ya tenemos las rutas definidas, podemos revisarla en la consola de pry usando el comando __show-routes__.
 
-[code]
+{% highlight %}
 
          Prefix Verb   URI Pattern                       Controller#Action
           posts GET    /:channel/posts(.:format)         posts#index
@@ -119,32 +126,32 @@ Ya tenemos las rutas definidas, podemos revisarla en la consola de pry usando el
                 PATCH  /admin/posts/:uuid(.:format)      admin/posts#update
                 PUT    /admin/posts/:uuid(.:format)      admin/posts#update
                 DELETE /admin/posts/:uuid(.:format)      admin/posts#destroy
-[/code]
+{% endhighlight %}
 
 Finalmente, para tener lista la lectura de los posts por canal implementamos las vistas tanto en html como en json.
 
 index.html.erb
 
-[code lang="erb"]
+{% highlight erb %}
 <h1><%= params[:channel] %></h1>
 <ul class="nms-post-list">
   <%= render partial: "post", collection: @posts %>
 </ul>
-[/code]
+{% endhighlight %}
 
 _post.html.erb
 
-[code lang="erb"]
+{% highlight erb %}
 <li class="nms-post-list-item">
   <%= link_to post_path(uuid: post.uuid,channel: post.channel) do %>
     <%= post.title %>
   <% end %>
 </li>
-[/code]
+{% endhighlight %}
 
 show.html.erb
 
-[code lang="erb"]
+{% highlight erb %}
 <article class="nms-post" data-uuid="<%= @post.uuid %>">
   <h1 class="nms-post-title"><%= @post.title %></h1>
   <p class="nms-post-header">
@@ -153,34 +160,34 @@ show.html.erb
   <p class="nms-post-message"><%= @post.message %></p>
 
 </article>
-[/code]
+{% endhighlight %}
 
 index.json.jbuilder
 
-[code lang="ruby"]
+{% highlight ruby %}
 json.array! @posts do |post|
   json.uuid post.uuid
   json.title post.title
   json.message post.message
 end
-[/code]
+{% endhighlight %}
 
 show.json.jbuilder
 
-[code lang="ruby"]
+{% highlight ruby %}
 json.uuid @post.uuid
 json.title @post.title
 json.message @post.message
 json.published_at @post.published_at
 json.channel @post.channel
 json.meta (if @post.meta then @post.meta else {} end)
-[/code]
+{% endhighlight %}
 
 Para hacer una prueba rápida crearemos un Post en la consola y veremos que entrega.
 
-[code lang="ruby"]
+{% highlight ruby %}
 Post.create channel: "BNS", uuid: SecureRandom.uuid, message: "Welcome to NMS, the new News Microservice", title: "Welcome to NMS", published_at: Time.zone.now
-[/code]
+{% endhighlight %}
 
 Con esto ya podemos comenzar a ver el listado en ambos formatos y sus detalles.
 Seguiremos con el sistema para agregar los posts en otro post.
