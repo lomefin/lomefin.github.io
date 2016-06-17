@@ -194,4 +194,4 @@ Post.create channel: "BNS", uuid: SecureRandom.uuid, message: "Welcome to NMS, t
 {% endhighlight %}
 
 Con esto ya podemos comenzar a ver el listado en ambos formatos y sus detalles.
-Seguiremos con el sistema para agregar los posts en otro post.
+Seguiremos con el sistema para agregar los posts en [la parte 2]({% post_url 2016-06-17-microservicio-de-noticias-en-rails-5-parte-2%}).
