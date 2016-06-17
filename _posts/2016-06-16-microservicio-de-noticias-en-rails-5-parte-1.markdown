@@ -1,7 +1,7 @@
 ----
  -layout: post
  -title:  "Microservicio de noticias en Rails 5. Parte 1"
- -date:   2016-06-16 22:32:35 -0400
+ -date:   2016-06-16 22:35:35 -0400
  -categories: rails5, tutorials
  ----
 
@@ -34,7 +34,7 @@ createdb nms_test
 
 Luego agregué Pry para tener una mejor consola y rails_12factor para integrarme con Heroku
 
-{% highlight ruby %}
+```ruby
 group :development do
   gem 'pry-rails'
 end
@@ -42,40 +42,42 @@ end
 group :production do
   gem 'rails_12factor'
 end
-{% endhighlight %}
+```
 
 Vamos a dejar todo listo para Heroku de una vez, eso significa tener un Procfile funcionando.
 
 Procfile
 
-{% highlight bash %}
+```bash
 
 web: bundle exec puma -t 5:5 -p ${PORT:-3000} -e ${RACK_ENV:-development}
 
-{% endhighlight %}
+```
 
 Ahora hacemos __bundle update__ y luego __heroku local__ y tendremos una aplicación lista para andar. En paralelo abro una nueva terminal para tener la consola andando a su vez con __rails c__.
 
 Luego vamos a crear el objeto Post que tendrá las noticias, siempre prefiero usar la clase News, pero como es un término plural se enreda todo, aparte Post es un elemento más genérico en los ejemplos.
 
-{% highlight bash %}
+```bash
 rails g model Post channel:string uuid:uuid options:json message:text title:text
 published_at:datetime meta:json url:string
-{% endhighlight %}
+```
 
 Una de las novedades de Rails 5 es que el uso de rake disminuye en favor del uso de rails, por lo tanto para hacer esta migración hacemos
 
-```bash rails db:migrate ```
+```bash
+rails db:migrate
+```
 
 Ahora a implementarle algunos scopes.
 
-{% highlight ruby %}
+``` ruby
 class Post < ApplicationRecord
   scope :of_channel, -> (channel) { where(channel: channel) }
   scope :published, -> { where.not(published_at: nil) }
   scope :incremental, -> { order(published_at: :desc) }
 end
-{% endhighlight %}
+```
 
 Listo nuestro modelo! Por ahora estaré usando el scope __:published__ que luego será reemplazado por [AASM](https://github.com/aasm/aasm). Ahora los controladores (en verdad, EL controlador)
 
