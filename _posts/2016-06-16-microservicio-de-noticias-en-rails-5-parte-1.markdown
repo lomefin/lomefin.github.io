@@ -2,7 +2,7 @@
 layout: post
 title:  "Microservicio de noticias en Rails 5. Parte 1"
 date:   2016-06-16 22:36:35 -0400
-categories: rails5 tutorials
+categories: tutorials rails5
 ---
 
 Rails 5 está pronto a salir y quiero aprovechar de documentar el desarrollo de un microservicio de noticias con el cual queremos entregar algunas informaciones en nuestra plataforma Bambinotes.
