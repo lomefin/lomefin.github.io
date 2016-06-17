@@ -240,7 +240,7 @@ new.html.erb
 </ul>
 {% endhighlight %}
 
-La siguiente parte del tutorial considera el agregarle seguridad al sistema y en la última etapa le agregaremos un poco de estilo para que no se vea tan simplón.
+La siguiente parte del tutorial considera el aprovechar un nuevo feature de Rails 5: ActionCable, luego seguiremos con cosas más convencionales: agregarle seguridad al sistema y en la última etapa le agregaremos un poco de estilo para que no se vea tan simplón.
 
 
 
