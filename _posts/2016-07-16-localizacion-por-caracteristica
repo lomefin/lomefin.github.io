@@ -101,4 +101,3 @@ plays_feed.en.yml
 Esta metodología que estamos ahora ocupando nos ha sido de mucha utilidad, pues generalmente la gran cantidad de cambios vienen definidos por característica y en sus primeras etapas, con el tiempo el texto se consolida y no cambia mucho por lo que no tiene mucho sentido tener un archivo monolítico con todas las llaves que deba ir recibiendo cambios en secciones muy específicas.
 
 El gran contra del método es que en caso de requerir hacer una modificación a ciertas traducciones no se tenga claro a qué componente pertenece por lo que se puede gastar algo de tiempo. Por esto recomiendo que las características más comunes si vivan en el archivo "principal" del idioma y solo los componentes adicionales tengan archivos prefijados.
-
