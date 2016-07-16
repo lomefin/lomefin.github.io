@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Localización Por caracaterísticas."
+title:  "Localización Por características."
 date:   2016-07-16 22:36:35 -0400
 categories: recommendations rails
 ---
