@@ -5,194 +5,100 @@ date:   2016-07-16 22:36:35 -0400
 categories: recommendations rails
 ---
 
-El trabajo con localización nun
-Rails 5 está pronto a salir y quiero aprovechar de documentar el desarrollo de un microservicio de noticias con el cual queremos entregar algunas informaciones en nuestra plataforma Bambinotes.
+El desarrollo de una aplicación siempre debe considerar ya la internacionalización y la localización, el no considerarlo nos limita inmediatamente sobre qué tan lejos queremos llegar.
 
-La idea es que los roles de usuarios de Bambinotes estén suscritos a un canal de noticias con el que puedan revisar algunos detalles de ésta, y que posteriormente puedan navegar a un blog más profesional si es necesario.
+Es por esto que Rails tiene considerado como un elemento principal la internacionalización, que lo acortan como i18n. Con este método en vez de escribir directamente el texto que quieres agregar, vas colocando etiquetas, que serán reemplazados por el texto que corresponda según el idioma en que se trabaje.
 
-El repositorio del proyecto está en GitHub: [https://github.com/lomefin/nms](https://github.com/lomefin/nms)
+Por ejemplo, en vez de colocar un título de la siguiente manera:
 
-Asumiremos que estamos desde un computador sin Rails 5, pero con RVM y Postgres ya instalado.
+	<h1>Noticias más recientes</h1>
 
-Primero, instalar ruby 2.3.1 -el más reciente al momento de escribir este artículo.
+Se puede internacionalizar así:
 
-```bash
-rvm use 2.3.1@nms --create
-```
+	<h1><%= t(".most_recent_stories") %></h1>
 
-Luego instalar rails 5 (5.0.0.rc1)
+Esto nos colocará en un comienzo un texto que dirá "Most Recent Stories" y que si pasamos el mouse sobre él nos indicará que falta una etiqueta en el idioma.
 
-```bash gem install rails --pre --no-ri --no-rdoc```
+## Pero entonces, cómo coloco el idioma?
 
-Luego que se instale todo eso, creo el nuevo proyecto llamado nms.
+En la carpeta config/locales/ estarán archivos yml en donde puedes crear las traducciones. Podemos considerar que hay dos archivos disponibles: en.yml y es.yml y que el título anterior esta en la página que se encuentra en views/welcome/index.html.erb
 
-```bash rails new nms --database=postgresql```
+en.yml
 
-Con el nuevo proyecto, y ya configurado para Postgres, debo crear las bases de datos.
+	en:
+		welcome:
+			index:
+				most_recent_stories: Most recent stories
 
-```bash
-createdb nms_development
-createdb nms_test
-```
+es.yml
 
-Luego agregué Pry para tener una mejor consola y rails_12factor para integrarme con Heroku
+	es:
+		welcome:
+			index:
+				most_recent_stories: Noticias más recientes
 
-```ruby
-group :development do
-  gem 'pry-rails'
-end
+En verdad es una maravilla!
 
-group :production do
-  gem 'rails_12factor'
-end
-```
+A medida que tu aplicación crece este archivo crecerá más y más. También, a medida que avanzas, podrás encontrarte con otros idiomas, o como en el caso de @familink, con distintas variedades de un idioma: El vocabulario que se usa en Chile dista mucho en algunos aspectos al de México o Argentina. Hay veces en que te gustaría aplicar un mismo vocabulario para todos, al fin y al cabo todos hablamos español supuestamente. Pero la experiencia dice que si quieres dar una buena experiencia de usuario, el usuario debe sentirse lo más cómodo con la aplicación y usar la terminología más cercana a él nos brinda una ventaja.
 
-Vamos a dejar todo listo para Heroku de una vez, eso significa tener un Procfile funcionando.
+Entonces, empezamos a tener archivos como en-US.yml en-GB.yml es-CL.yml es-ES.yml es-AR.yml es-MX.yml y cada uno con miles de llaves y términos.
 
-Procfile
+Entonces llegamos a un tema que hay que analizar: Tenemos dos idiomas con algunas variantes, cada vez que debemos hacer una nueva característica a nuestro software debemos agregar las llaves múltiples veces: dos sets de llaves en inglés y cuatro sets de llaves en español. Puede que haya un término distinto en cada idioma, pero seguramente la regla general es que la mayoría de los términos se conserva de una variante idiomática a otra. 
 
-```bash
+Estamos ahora en un punto donde hacemos muchos copiados y pegados y donde hacer las mezclas de código en git se hace un poco más compleja pues varias personas pueden estar cambiando el archivo de internalización en distintos puntos y cada vez que queremos hacer un cambio que afecte a todas las variantes de un idioma debemos hacer un cambio por cada archivo del idioma. En resumen: un pequeño desastre. Este desastre se nos complejiza aún más por el hecho que hay componentes de una aplicación que reutilizamos en otra, por lo que hemos empezado a aislar los commits de los archivos de internacionalización solamente para "aislar la pelea de la mezcla".
 
-web: bundle exec puma -t 5:5 -p ${PORT:-3000} -e ${RACK_ENV:-development}
+Un ejemplo corto, para una nueva característica
 
-```
+en-US.yml
+	
+	en:
+		plays_feed:
+			add_to_calendar: Add to my calendar
+			find_venue: Find closest Theater
 
-Ahora hacemos __bundle update__ y luego __heroku local__ y tendremos una aplicación lista para andar. En paralelo abro una nueva terminal para tener la consola andando a su vez con __rails c__.
+en-GB.yml
 
-Luego vamos a crear el objeto Post que tendrá las noticias, siempre prefiero usar la clase News, pero como es un término plural se enreda todo, aparte Post es un elemento más genérico en los ejemplos.
+	en:
+		plays_feed:
+			add_to_calendar: Add to my calendar
+			find_venue: Find closes Theatre 
+		
 
-```bash
-rails g model Post channel:string uuid:uuid options:json message:text title:text
-published_at:datetime meta:json url:string
-```
 
-Una de las novedades de Rails 5 es que el uso de rake disminuye en favor del uso de rails, por lo tanto para hacer esta migración hacemos
+Si ya estás permanentemente peleando con tu propio código, hay algo que se debe hacer.
 
-```bash
-rails db:migrate
-```
+Fue entonces que por primera vez me fijé en devise.es.yml 
 
-Ahora a implementarle algunos scopes.
+Devise en un sistema de control de acceso y el genera sus propias vistas, que vienen con etiquetas de i18n por supuesto, ellos tienen disponible una enorme cantidad de archivos de i18n para muchos idiomas y variantes, incluso usando distintas voces, dependiendo de que tan coloquial o formal quieres tu aplicación. Cómo ellos entregan entonces sus traducciones sin provocar una pesadilla en la mezcla? Con prefijos
 
-```ruby
-class Post < ApplicationRecord
-  scope :of_channel, -> (channel) { where(channel: channel) }
-  scope :published, -> { where.not(published_at: nil) }
-  scope :incremental, -> { order(published_at: :desc) }
-end
-```
+## Prefijos por característica
 
-Listo nuestro modelo! Por ahora estaré usando el scope __:published__ que luego será reemplazado por [AASM](https://github.com/aasm/aasm). Ahora los controladores (en verdad, EL controlador)
+devise.es.yml Tiene la siguiente estructura:
 
-```bash
-rails g controller posts
-```
+	es:
+		devise:
+			sessions:
+				new:
+					login: Ingresar
 
-El único controlador que tendremos hasta el momento será post_controller. __Nota:__ En el código habrá un controlador de administración, pero no hablaré de él aún hasta que tenga una implementación definida.
+Exactamente igual que el archivo de i18n que vimos, pues YML combina todas las llaves y luego las deja disponibles. 
+Entonces, por qué no consideramos las características cada una como un nuevo prefijo para el idioma, reciclamos la gran mayoría de los textos y cambiamos la diferencias? Aquí podemos explotar la capacidad de hacer referencias en YAML.
 
-Nuestro controlador tendrá esta forma
-{% highlight ruby %}
+Volviendo al ejemplo de los teatros
 
-class PostsController < ApplicationController
+plays_feed.en.yml
 
-  def index
-    @posts = Post.of_channel(params[:channel]).published.incremental
-  end
+	en-US:
+		plays_feed: &plays_feed
+			add_to_calendar: Add to calendar
+			find_venue: Find closest theater
 
-  def show
-    @post = Post.of_channel(params[:channel]).published.find_by_uuid params[:uuid]
-  end
+	en-GB:
+		play_feed:
+			<<: *plays_feed                             # Agrego los campos definidos anteriormente
+			find_venue: Find closes theatre   # Sobreescribo solo los campos que difieren.
 
-end
-{% endhighlight %}
+Esta metodología que estamos ahora ocupando nos ha sido de mucha utilidad, pues generalmente la gran cantidad de cambios vienen definidos por característica y en sus primeras etapas, con el tiempo el texto se consolida y no cambia mucho por lo que no tiene mucho sentido tener un archivo monolítico con todas las llaves que deba ir recibiendo cambios en secciones muy específicas.
 
-Luego configuraremos las rutas para que podamos llegar a estos objetos.
+El gran contra del método es que en caso de requerir hacer una modificación a ciertas traducciones no se tenga claro a qué componente pertenece por lo que se puede gastar algo de tiempo. Por esto recomiendo que las características más comunes si vivan en el archivo "principal" del idioma y solo los componentes adicionales tengan archivos prefijados.
 
-{% highlight ruby %}
-Rails.application.routes.draw do
-  scope ':channel' do
-    resources :posts, only: [:show, :index], param: :uuid
-  end
-end
-{% endhighlight %}
-
-Ya tenemos las rutas definidas, podemos revisarla en la consola de pry usando el comando __show-routes__.
-
-{% highlight text%}
-
-         Prefix Verb   URI Pattern                       Controller#Action
-          posts GET    /:channel/posts(.:format)         posts#index
-           post GET    /:channel/posts/:uuid(.:format)   posts#show
-    admin_posts GET    /admin/posts(.:format)            admin/posts#index
-                POST   /admin/posts(.:format)            admin/posts#create
-   new_admin_post GET    /admin/posts/new(.:format)        admin/posts#new
-  edit_admin_post GET    /admin/posts/:uuid/edit(.:format) admin/posts#edit
-     admin_post GET    /admin/posts/:uuid(.:format)      admin/posts#show
-                PATCH  /admin/posts/:uuid(.:format)      admin/posts#update
-                PUT    /admin/posts/:uuid(.:format)      admin/posts#update
-                DELETE /admin/posts/:uuid(.:format)      admin/posts#destroy
-{% endhighlight %}
-
-Finalmente, para tener lista la lectura de los posts por canal implementamos las vistas tanto en html como en json.
-
-index.html.erb
-
-{% highlight erb %}
-<h1><%= params[:channel] %></h1>
-<ul class="nms-post-list">
-  <%= render partial: "post", collection: @posts %>
-</ul>
-{% endhighlight %}
-
-_post.html.erb
-
-{% highlight erb %}
-<li class="nms-post-list-item">
-  <%= link_to post_path(uuid: post.uuid,channel: post.channel) do %>
-    <%= post.title %>
-  <% end %>
-</li>
-{% endhighlight %}
-
-show.html.erb
-
-{% highlight erb %}
-<article class="nms-post" data-uuid="<%= @post.uuid %>">
-  <h1 class="nms-post-title"><%= @post.title %></h1>
-  <p class="nms-post-header">
-    <small class="nms-post-publication-date" data-value="<%= @post.published_at %>"><%= l @post.published_at %></small>
-  </p>
-  <p class="nms-post-message"><%= @post.message %></p>
-
-</article>
-{% endhighlight %}
-
-index.json.jbuilder
-
-{% highlight ruby %}
-json.array! @posts do |post|
-  json.uuid post.uuid
-  json.title post.title
-  json.message post.message
-end
-{% endhighlight %}
-
-show.json.jbuilder
-
-{% highlight ruby %}
-json.uuid @post.uuid
-json.title @post.title
-json.message @post.message
-json.published_at @post.published_at
-json.channel @post.channel
-json.meta (if @post.meta then @post.meta else {} end)
-{% endhighlight %}
-
-Para hacer una prueba rápida crearemos un Post en la consola y veremos que entrega.
-
-{% highlight ruby %}
-Post.create channel: "BNS", uuid: SecureRandom.uuid, message: "Welcome to NMS, the new News Microservice", title: "Welcome to NMS", published_at: Time.zone.now
-{% endhighlight %}
-
-Con esto ya podemos comenzar a ver el listado en ambos formatos y sus detalles.
-Seguiremos con el sistema para agregar los posts en [la parte 2]({% post_url 2016-06-17-microservicio-de-noticias-en-rails-5-parte-2%}).
