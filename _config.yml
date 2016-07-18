@@ -4,7 +4,7 @@
 # which you are expected to set up once and rarely need to edit after that.
 # For technical reasons, this file is *NOT* reloaded automatically when you use
 # 'jekyll serve'. If you change this file, please restart the server process.
-
+encoding: UTF-8
 # Site settings
 title: Leonardo Luarte González
 email: leonardo@luarte.net
