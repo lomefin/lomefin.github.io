@@ -32,6 +32,8 @@ mardown: GFM
 theme: minima
 plugins:
   - jekyll-feed
+google_analytics: G-5YPX5MG51C
+
 
 # Exclude from processing.
 # The following items will not be processed, by default.
