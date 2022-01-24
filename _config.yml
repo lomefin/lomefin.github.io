@@ -32,6 +32,7 @@ mardown: GFM
 theme: minima
 plugins:
   - jekyll-feed
+  - jekyll-seo-tag
 google_analytics: G-5YPX5MG51C
 
 
