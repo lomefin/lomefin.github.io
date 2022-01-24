@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "Build a redirector with Cloudflare"
-date: 2021-10-16 17:06:35 -0400
+title: "Using importmap in Ruby on Rails"
+date: 2022-01-24 3:14:35 -0400
 categories:
 ---
 
