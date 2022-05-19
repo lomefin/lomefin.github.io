@@ -1,10 +1,129 @@
 ---
 ---
-@import
-  "minima/skins/{{ site.minima.skin | default: 'classic' }}",
-  "minima/initialize";
+
+
+@import "https://unpkg.com/open-props";
+@import "https://unpkg.com/open-props/normalize.min.css";
+@import "https://unpkg.com/open-props/buttons.min.css";
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@200;400;700&family=PT+Mono&family=Ubuntu+Mono&display=swap');
 
 :root {
+  --font-sans: 'Ubuntu', system-ui, -apple-system, serif; 
+  --font-serif: 'Lexend',system-ui,-apple-system,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif; 
+  --font-monospace: 'PT Mono', Roboto;
   --site-skin: {{site.minima.skin}};
 }
 
+body {
+  display: grid;
+  place-content: center;
+  padding: var(--size-7);
+  gap: var(--size-7);
+  background-color: var(--surface-1);
+  color: var(--text-1);
+}
+
+article, section, form, fieldset, header, .page, .spaced, #text__lists > div, #text__code > div, #text__inline > div {
+  display: grid;
+  gap: var(--size-4);
+}
+
+.site-title {
+  border-top: 0;
+}
+
+.surface {
+  border-radius: var(--radius-3);
+  display: grid;
+  font-size: var(--font-size-3);
+  font-weight: var(--font-weight-2);
+  box-shadow: var(--shadow-6);
+  padding: var(--size-3);
+}
+
+.surface-1 {
+  background-color: var(--surface-2);
+  color: var(--text-2);
+}
+
+ul.post-list {
+  display: grid;
+  gap: var(--size-3);
+  li {
+    @extend .surface, .surface-1;
+  }
+}
+
+.social-media-list {
+  list-style: none; margin-left: 0;
+  //display: table; margin: 0 auto;
+  display: flex;
+  li {
+    a {
+      display: block; padding: 7.5px;
+
+      svg { inline-size: var(--size-4); block-size: var(--size-4); }
+    }
+  }
+} 
+
+
+.highlight .c { color: #545454; font-style: italic; }
+.highlight .err { color: #f07178; background-color: #e3d2d2; }
+.highlight .k { color: #89DDFF; font-weight: bold; }
+.highlight .o { font-weight: bold; }
+.highlight .cm { color: #545454; font-style: italic; }
+.highlight .cp { color: #545454; font-weight: bold; }
+.highlight .c1 { color: #545454; font-style: italic; }
+.highlight .cs { color: #545454; font-weight: bold; font-style: italic; }
+.highlight .gd { color: #000; background-color: #fdd; }
+.highlight .gd .x { color: #000; background-color: #faa; }
+.highlight .ge { font-style: italic; }
+.highlight .gr { color: #f07178; }
+.highlight .gh { color: #999; }
+.highlight .gi { color: #000; background-color: #dfd; }
+.highlight .gi .x { color: #000; background-color: #afa; }
+.highlight .go { color: #888; }
+.highlight .gp { color: #555; }
+.highlight .gs { font-weight: bold; }
+.highlight .gu { color: #aaa; }
+.highlight .gt { color: #f07178; }
+.highlight .kc { font-weight: bold; }
+.highlight .kd { font-weight: bold; }
+.highlight .kp { font-weight: bold; }
+.highlight .kr { font-weight: bold; }
+.highlight .kt { color: #FFCB6B; font-weight: bold; }
+.highlight .m { color: #F78C6C; }
+.highlight .s { color: #C3E88D; }
+.highlight .na { color: #008080; }
+.highlight .nb { color: #EEFFFF; }
+.highlight .nc { color: #FFCB6B; font-weight: bold; }
+.highlight .no { color: #008080; }
+.highlight .ni { color: #800080; }
+.highlight .ne { color: #900; font-weight: bold; }
+.highlight .nf { color: #82AAFF; font-weight: bold; }
+.highlight .nn { color: #555; }
+.highlight .nt { color: #FFCB6B; }
+.highlight .nv { color: #EEFFFF; }
+.highlight .ow { font-weight: bold; }
+.highlight .w { color: #EEFFFF; }
+.highlight .mf { color: #F78C6C; }
+.highlight .mh { color: #F78C6C; }
+.highlight .mi { color: #F78C6C; }
+.highlight .mo { color: #F78C6C; }
+.highlight .sb { color: #C3E88D; }
+.highlight .sc { color: #C3E88D; }
+.highlight .sd { color: #C3E88D; }
+.highlight .s2 { color: #C3E88D; }
+.highlight .se { color: #EEFFFF; }
+.highlight .sh { color: #C3E88D; }
+.highlight .si { color: #C3E88D; }
+.highlight .sx { color: #C3E88D; }
+.highlight .sr { color: #C3E88D; }
+.highlight .s1 { color: #C3E88D; }
+.highlight .ss { color: #C3E88D; }
+.highlight .bp { color: #999; }
+.highlight .vc { color: #FFCB6B; }
+.highlight .vg { color: #EEFFFF; }
+.highlight .vi { color: #EEFFFF; }
+.highlight .il { color: #F78C6C; }
