@@ -21,11 +21,15 @@ rvm use 2.3.1@nms --create
 
 Luego instalar rails 5 (5.0.0.rc1)
 
-```bash gem install rails --pre --no-ri --no-rdoc```
+```bash
+gem install rails --pre --no-ri --no-rdoc
+```
 
-Luego que se instale todo eso, creo el nuevo proyecto llamado nms.
+Luego que se instale todo eso, creo el nuevo proyecto llamado `nms`.
 
-```bash rails new nms --database=postgresql```
+```bash 
+rails new nms --database=postgresql
+```
 
 Con el nuevo proyecto, y ya configurado para Postgres, debo crear las bases de datos.
 
@@ -51,9 +55,7 @@ Vamos a dejar todo listo para Heroku de una vez, eso significa tener un Procfile
 Procfile
 
 ```bash
-
 web: bundle exec puma -t 5:5 -p ${PORT:-3000} -e ${RACK_ENV:-development}
-
 ```
 
 Ahora hacemos __bundle update__ y luego __heroku local__ y tendremos una aplicación lista para andar. En paralelo abro una nueva terminal para tener la consola andando a su vez con __rails c__.
@@ -90,7 +92,8 @@ rails g controller posts
 El único controlador que tendremos hasta el momento será post_controller. __Nota:__ En el código habrá un controlador de administración, pero no hablaré de él aún hasta que tenga una implementación definida.
 
 Nuestro controlador tendrá esta forma
-{% highlight ruby %}
+
+{% highlight ruby linenos%}
 
 class PostsController < ApplicationController
 
@@ -107,7 +110,7 @@ end
 
 Luego configuraremos las rutas para que podamos llegar a estos objetos.
 
-{% highlight ruby %}
+{% highlight ruby linenos %}
 Rails.application.routes.draw do
   scope ':channel' do
     resources :posts, only: [:show, :index], param: :uuid
@@ -117,7 +120,7 @@ end
 
 Ya tenemos las rutas definidas, podemos revisarla en la consola de pry usando el comando __show-routes__.
 
-{% highlight text%}
+{% highlight text %}
 
          Prefix Verb   URI Pattern                       Controller#Action
           posts GET    /:channel/posts(.:format)         posts#index
@@ -136,7 +139,7 @@ Finalmente, para tener lista la lectura de los posts por canal implementamos las
 
 index.html.erb
 
-{% highlight erb %}
+{% highlight erb linenos%}
 <h1><%= params[:channel] %></h1>
 <ul class="nms-post-list">
   <%= render partial: "post", collection: @posts %>
@@ -145,7 +148,7 @@ index.html.erb
 
 _post.html.erb
 
-{% highlight erb %}
+{% highlight erb linenos %}
 <li class="nms-post-list-item">
   <%= link_to post_path(uuid: post.uuid,channel: post.channel) do %>
     <%= post.title %>
@@ -155,11 +158,14 @@ _post.html.erb
 
 show.html.erb
 
-{% highlight erb %}
+{% highlight erb linenos %}
 <article class="nms-post" data-uuid="<%= @post.uuid %>">
   <h1 class="nms-post-title"><%= @post.title %></h1>
   <p class="nms-post-header">
-    <small class="nms-post-publication-date" data-value="<%= @post.published_at %>"><%= l @post.published_at %></small>
+    <small class="nms-post-publication-date" 
+           data-value="<%= @post.published_at %>">
+           <%= l @post.published_at %>
+    </small>
   </p>
   <p class="nms-post-message"><%= @post.message %></p>
 
@@ -168,7 +174,7 @@ show.html.erb
 
 index.json.jbuilder
 
-{% highlight ruby %}
+{% highlight ruby lineno s%}
 json.array! @posts do |post|
   json.uuid post.uuid
   json.title post.title
@@ -178,7 +184,7 @@ end
 
 show.json.jbuilder
 
-{% highlight ruby %}
+{% highlight ruby linenos %}
 json.uuid @post.uuid
 json.title @post.title
 json.message @post.message
@@ -189,8 +195,10 @@ json.meta (if @post.meta then @post.meta else {} end)
 
 Para hacer una prueba rápida crearemos un Post en la consola y veremos que entrega.
 
-{% highlight ruby %}
-Post.create channel: "BNS", uuid: SecureRandom.uuid, message: "Welcome to NMS, the new News Microservice", title: "Welcome to NMS", published_at: Time.zone.now
+{% highlight ruby linenos%}
+Post.create channel: "BNS", uuid: SecureRandom.uuid, 
+            message: "Welcome to NMS, the new News Microservice",
+            title: "Welcome to NMS", published_at: Time.zone.now
 {% endhighlight %}
 
 Con esto ya podemos comenzar a ver el listado en ambos formatos y sus detalles.

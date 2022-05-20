@@ -160,6 +160,9 @@ ul.post-list {
   }
 } 
 
+figure.highlight {
+  place-items: start;
+}
 .rouge-table {
   .lineno { color: var(--green-0); }
 }
