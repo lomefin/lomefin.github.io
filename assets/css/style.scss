@@ -12,6 +12,8 @@
   --font-serif: 'Lexend',system-ui,-apple-system,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif; 
   --font-monospace: 'PT Mono', Roboto;
   --site-skin: {{site.minima.skin}};
+  --surface-color: var(--surface-2);
+  --complimentary-surface-color: var(--indigo-0);
 }
 
 body {
@@ -21,7 +23,15 @@ body {
   gap: var(--size-7);
   background-color: var(--surface-1);
   color: var(--text-1);
+  font-family: var(--font-serif);
 }
+
+:where(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--font-sans);
+  font-weight: 200;
+}
+
+
 
 article, section, form, fieldset, header, .page, .spaced, #text__lists > div, #text__code > div, #text__inline > div {
   display: grid;
@@ -38,7 +48,9 @@ article, section, form, fieldset, header, .page, .spaced, #text__lists > div, #t
   font-size: var(--font-size-3);
   font-weight: var(--font-weight-2);
   box-shadow: var(--shadow-6);
-  padding: var(--size-3);
+  padding-inline: var(--size-3);
+  padding-block: var(--size-5);
+  cursor: pointer;
 }
 
 .surface-1 {
@@ -46,11 +58,35 @@ article, section, form, fieldset, header, .page, .spaced, #text__lists > div, #t
   color: var(--text-2);
 }
 
+.surface-2 {
+  background-image: linear-gradient(270deg, var(--surface-color) 0%, var(--surface-color) 50%, var(--complimentary-surface-color) 80%);
+  background-size: 400%;
+  background-repeat: no-repeat;
+  background-position-x: right;
+
+  &:hover {
+    color: var(--surface-color);
+    transition: background-position 300ms linear;
+    background-position-x: left;
+    //background-blend-mode: lighten;
+  }
+}
+
 ul.post-list {
+  padding-inline-start: 0;
   display: grid;
-  gap: var(--size-3);
-  li {
-    @extend .surface, .surface-1;
+  gap: var(--size-6);
+  li.post-list-item {
+    @extend .surface, .surface-2;
+    max-inline-size: 100%;
+    .post-meta {
+      font-size: var(--font-size-fluid-00);
+      margin-block-end: var(--size-1);
+    }
+    .post-link {
+      font-size: var(--font-size-fluid-1);
+      text-decoration: none;
+    }
   }
 }
 
