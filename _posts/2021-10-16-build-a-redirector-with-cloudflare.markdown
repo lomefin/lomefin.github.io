@@ -22,22 +22,25 @@ We have a the [Avispa.tech](https://avispa.tech) domain and I thought about maki
 
 So firstly I used a server meant for webhooks to work on the redirections. Its a rails server so I made it like so
 
-`In routes.rb`
+In routes.rb
 
-  
-    get ':slug', to: 'links#redirect', constraints: { subdomain: 'redir' }
+```ruby  
+get ':slug', to: 'links#redirect', constraints: { subdomain: 'redir' }
+```
 
 So if you tried `redir.yourdomain.com/jira` it would take you to your `redirects_controller` which would have something like this
 
-    class LinksController < ApplicationController
-      def redirect
-        Rails.logger.info "Redirecting to #{params[:slug]}"
-        slug = params[:slug]
-        return redirect_to 'https://avispa.tech' unless REDIRECTS.key? slug
-        
-        redirect_to REDIRECTS[slug]
-      end
-    end
+{% highlight ruby linenos %}
+class LinksController < ApplicationController
+  def redirect
+    Rails.logger.info "Redirecting to #{params[:slug]}"
+    slug = params[:slug]
+    return redirect_to 'https://avispa.tech' unless REDIRECTS.key? slug
+    
+    redirect_to REDIRECTS[slug]
+  end
+end
+{% endhighlight %}
 
 and REDIRECTS its just a Hash with the links hardcoded into them (we really don't get pissed with so many URLs)
 
@@ -51,41 +54,43 @@ So I logged into my Cloudflare account and hit the Workers option. And clicked o
 
 That takes me to an editor which has an example in Javascript, I switched it fast to see the [Examples](https://developers.cloudflare.com/workers/examples) so I could know how to redirect, so the first version went like this:
 
-    // I didn't event touch this part!
-    addEventListener("fetch", (event) => {
-      event.respondWith(
-        handleRequest(event.request).catch(
-          (err) => new Response(err.stack, { status: 500 })
-        )
-      );
-    });
+{% highlight javascript linenos %}
+// I didn't event touch this part!
+addEventListener("fetch", (event) => {
+  event.respondWith(
+    handleRequest(event.request).catch(
+      (err) => new Response(err.stack, { status: 500 })
+    )
+  );
+});
 
-    const REDIRECTS = {
-       'jira': 'https://client.atlassian.net/jira/projects',
-       'rock': 'https://web.rock.so/space/rockspace',
-       'clickup': 'https://app.clickup.com/'
-    }
+const REDIRECTS = {
+    'jira': 'https://client.atlassian.net/jira/projects',
+    'rock': 'https://web.rock.so/space/rockspace',
+    'clickup': 'https://app.clickup.com/'
+}
 
-    const PATHNAME_REGEX = /\/(.+)/gm;
-    /**
-    * @param {Request} request
-    * @returns {Promise<Response>}
-    */
-    async function handleRequest(request) {
-      const { pathname } = new URL(request.url);
-      // I just extract the path
-      // so something.domain.com/jira becomes '/jira'
-      // so I made it 'jira'
-      // It's a little overengineered but I rather use
-      // regular expressions that other replacements
-      const slug = pathname.replace(PATHNAME_REGEX, '$1')
+const PATHNAME_REGEX = /\/(.+)/gm;
+/**
+* @param {Request} request
+* @returns {Promise<Response>}
+*/
+async function handleRequest(request) {
+  const { pathname } = new URL(request.url);
+  // I just extract the path
+  // so something.domain.com/jira becomes '/jira'
+  // so I made it 'jira'
+  // It's a little overengineered but I rather use
+  // regular expressions that other replacements
+  const slug = pathname.replace(PATHNAME_REGEX, '$1')
 
-      // If the slug is available, then go there, if it is missing, then avispa.tech is the fallback
-      const url = REDIRECTS[slug] || 'https://avispa.tech'
-      
-      // Pretty straight-forward
-      return Response.redirect(url, 302)
-    }
+  // If the slug is available, then go there, if it is missing, then avispa.tech is the fallback
+  const url = REDIRECTS[slug] || 'https://avispa.tech'
+  
+  // Pretty straight-forward
+  return Response.redirect(url, 302)
+}
+{% endhighlight %}
 
 Alright, another 3 minutes, now, can it go a little more dangerous?
 
@@ -109,14 +114,16 @@ In my worker, I hit `Settings`, KV Namespace Bindings, Edit Binding, and I set _
 
 So now I removed the REDIRECTS Hash from the code and switched __handleRequest__ into this
 
-    async function handleRequest(request) {
-      const { pathname } = new URL(request.url);
-      // The substituted value will be contained in the result variable
-      const slug = pathname.replace(PATHNAME_REGEX, '$1')
-      const url = await REDIRECTS.get(slug) || 'https://avispa.tech'
-      
-      return Response.redirect(url, 302)
-    }
+{% highlight js linenos %}
+async function handleRequest(request) {
+  const { pathname } = new URL(request.url);
+  // The substituted value will be contained in the result variable
+  const slug = pathname.replace(PATHNAME_REGEX, '$1')
+  const url = await REDIRECTS.get(slug) || 'https://avispa.tech'
+  
+  return Response.redirect(url, 302)
+}
+{% endhighlight %}
 
 And that's it!
 
