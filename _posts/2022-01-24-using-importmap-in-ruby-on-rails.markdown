@@ -30,23 +30,26 @@ to an URL.
 
 My `importmap.rb` looks like this at this moment:
 
-    pin "application", preload: true
-    pin "@hotwired/turbo-rails", to: "turbo.min.js", preload: true
-    pin "@hotwired/stimulus", to: "stimulus.min.js", preload: true
-    pin "@hotwired/stimulus-loading", to: "stimulus-loading.js", preload: true
-    pin_all_from "app/javascript/controllers", under: "controllers"
-    pin "bootstrap", to: "https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.esm.js"
-    pin "@popperjs/core", to: "https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.0/lib/index.js"
-    pin "chart.js", to: "https://ga.jspm.io/npm:chart.js@3.7.0/dist/chart.esm.js"
-    pin "lazysizes", to: "https://ga.jspm.io/npm:lazysizes@5.3.2/lazysizes.js"
-
+```ruby
+pin "application", preload: true
+pin "@hotwired/turbo-rails", to: "turbo.min.js", preload: true
+pin "@hotwired/stimulus", to: "stimulus.min.js", preload: true
+pin "@hotwired/stimulus-loading", to: "stimulus-loading.js", preload: true
+pin_all_from "app/javascript/controllers", under: "controllers"
+pin "bootstrap", to: "https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.esm.js"
+pin "@popperjs/core", to: "https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.0/lib/index.js"
+pin "chart.js", to: "https://ga.jspm.io/npm:chart.js@3.7.0/dist/chart.esm.js"
+pin "lazysizes", to: "https://ga.jspm.io/npm:lazysizes@5.3.2/lazysizes.js"
+```
 Cool, huh? Now we have our dependencies declared, so how do we use it?
 
 Well.. we just use it. For example, where I use ChartJS (it is an Stimulus Controller) I can use it like this:
 
-    import { Controller } from "@hotwired/stimulus"
-    import { Chart, registerables  } from "chart.js"
-    Chart.register(...registerables )
+```javascript
+import { Controller } from "@hotwired/stimulus"
+import { Chart, registerables  } from "chart.js"
+Chart.register(...registerables )
+```
 
 Did you get it? With the newest versions of javascript supported by the browser we can import from an URL, but with importmap 
 we make an index saying `chart.js` translates into `https://ga.jspm.io/npm:chart.js@3.7.0/dist/chart.esm.js` so instead of doing
