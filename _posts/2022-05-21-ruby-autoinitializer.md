@@ -140,7 +140,7 @@ To make it happen we have to build our initializers like so
 def initialize(a:, b:, c:)
   super
 end
-{% end %}
+{% endhighlight %}
 
 When `super` is called, invokes the same method in its parents **with the same parameters**. This is different than using `super()` which invokes the parent method with no arguments.
 
