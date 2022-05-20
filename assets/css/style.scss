@@ -160,9 +160,12 @@ ul.post-list {
   }
 } 
 
+.rouge-table {
+  .lineno { color: var(--green-0); }
+}
 .highlight {
   .c { color: #545454; font-style: italic; }
-  .err { color: #f07178; background-color: #e3d2d2; }
+  .err { color: #f07178; } //background-color: #e3d2d2; }
   .k { color: #89DDFF; font-weight: bold; }
   .o { font-weight: bold; }
   .cm { color: #545454; font-style: italic; }

@@ -14,16 +14,18 @@ But there is a catch, you can ask the browser to click the link and the download
 
 Most of what I've seen is something like
 
-    file_list = list_files_in_download_dir
-    diff = []
-    link.click
-    10.times do
-      file_list_now = list_files_in_download_dir
-      diff = file_list_now - file_list
-      break if diff.length.positive?
-    end
+```ruby
+file_list = list_files_in_download_dir
+diff = []
+link.click
+10.times do
+  file_list_now = list_files_in_download_dir
+  diff = file_list_now - file_list
+  break if diff.length.positive?
+end
 
-    puts "The files are: #{diff}"
+puts "The files are: #{diff}"
+```
 
 But having the file when it has been downloaded is top priority to me, maybe also to you.
 
@@ -33,14 +35,16 @@ Since I use Typhoeus and Typhoeus wraps curl, from another article I learned tha
 
 So, if your `Watir` instance is browser and the file to which you are going to write to is `file` you can do
 
-    browser.cookies.to_a.each do |ch| 
-      terms = []
-      terms << ch[:domain]
-      terms << ch[:same_site].nil? ? 'FALSE' : 'TRUE'
-      terms << ch[:path]
-      terms << ch[:secure] ? 'TRUE' : 'FALSE'
-      terms << ch[:expires].to_i.to_s
-      terms << ch[:name]
-      terms << ch[:value]
-      file.puts terms.join("\t")
-    end
+```ruby
+browser.cookies.to_a.each do |ch| 
+  terms = []
+  terms << ch[:domain]
+  terms << ch[:same_site].nil? ? 'FALSE' : 'TRUE'
+  terms << ch[:path]
+  terms << ch[:secure] ? 'TRUE' : 'FALSE'
+  terms << ch[:expires].to_i.to_s
+  terms << ch[:name]
+  terms << ch[:value]
+  file.puts terms.join("\t")
+end
+```

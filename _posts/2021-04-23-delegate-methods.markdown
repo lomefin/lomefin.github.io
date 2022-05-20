@@ -18,21 +18,27 @@ Si va a haber una parte de la vista que solo hablará de vehicle, podría haber 
 
 Por ej:
 
-`render partial: 'common/vehicle', locals: { vehicle: @credit.vehicle }`
+```ruby
+render partial: 'common/vehicle', locals: { vehicle: @credit.vehicle }
+```
 
 También se pueden delegar métodos, dentro de esa vista tengo a vehicle y delego sus datos de identificación, así
 
-    class Vehicle
-      belongs_to :identification
-      delegate :plate, to: identification
-    end
+```ruby
+class Vehicle
+  belongs_to :identification
+  delegate :plate, to: identification
+end
+```
 
 y ahí tengo entonces una vista que trabaja solo con Vehicle y cuando quiero la patente hago `= vehicle.plate` o si lo quieren hacer más explícito
 
-    class Vehicle
-      belongs_to :identification
-      delegate :plate, to: identification, prefix: true
-    end
+```ruby
+class Vehicle
+  belongs_to :identification
+  delegate :plate, to: identification, prefix: true
+end
+```
 
 `= vehicle.identification_plate`
 

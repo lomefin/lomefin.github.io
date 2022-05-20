@@ -24,11 +24,13 @@ Easy-piece, now, how do I pass that flag from my code, to Typhoeus, to Curl? Typ
 
 So we can add `ssl_cipher_list` into our Typhoeus request, like so
 
-    request = Typhoeus::Request.new(url,
-                                  method: method,
-                                  body: body,
-                                  headers: headers,
-                                  params: params,
-                                  ssl_cipher_list: 'DEFAULT:!DH')
+```ruby
+request = Typhoeus::Request.new(url,
+                                method: method,
+                                body: body,
+                                headers: headers,
+                                params: params,
+                                ssl_cipher_list: 'DEFAULT:!DH')
+```
 
 It would be better to just have the server updated, but in the meanwhile me, and maybe you, can connect to servers which present the same error.
