@@ -27,12 +27,13 @@ Hay dos cafeterías una en el hall del check in y otra en la sala de embarque. L
 
 UPDATE: son las 6.55 y la gente ya está abordando. Nos recomendaron quedarnos cerca del centro de la nave, creo que por la fila que se hizo que eso ya no será posible.
 
-Unos 45 minutos antes ya la gente empieza a hacer la fila para embarcar. El proceso es muy rápido, se llega directo al buque y entramos a un gran salon que tiene los miles de asientos que tiene el buque. Este buque en particular es el Francisco, la joya de la corona de Buquebus, nos llevará directo a Montevideo, sin paradas.
+Unos 45 minutos antes ya la gente empieza a hacer la fila para embarcar. El proceso es muy rápido, se llega directo al buque y entramos a un gran salon que tiene los miles de asientos que tiene el buque. Este buque en particular es el Francisco, la joya de la corona de Buquebus, nos llevará directo a Montevideo, sin paradas. Este es un catamarán que usa jets para avanzar, es una bestia, puede llevar 1000 pasajeros, 150 autos y lo hace a casi 100 km/h.
 
-Si no alcanzaste a comprar un café en tierra, dentro del buque hay varias tiendas. Creo que esto es super importante para gente que no es tan marítima, pese a ser chileno, no tenemos tanta infraestructura fluvial. Un transbordador es como un estacionamiento o un mall flotante, hay muchos asientos, pero a diferencia de un avión, aquí hay espacio, así que hay tiendas de comida y duty frees dentro de la nave.
+Si no alcanzaste a comprar un café en tierra, dentro del buque hay varias tiendas, para comer como también una casa de cambios y un duty free. Creo que esto es super importante para gente que no es tan marítima, pese a ser chileno, no tenemos tanta infraestructura fluvial. Un transbordador es como un estacionamiento o un mall flotante, hay muchos asientos, pero a diferencia de un avión, aquí hay espacio, así que hay tiendas de comida y duty frees dentro de la nave.
 
 Hasta el momento creo que la alternativa de buquebus es la superior, pese a que piden un abordaje temprano, no requieres más tiempo que un aeropuerto y el terminal está en medio de la ciudad. El viaje no es tan rápido como el avión pero no tienes ninguna de las incomodidades del vuelo.
 
+Si tienes pensado hacer el viaje, considera esta opción y tenla dentro de tu plan base de viaje.
 
 
 
