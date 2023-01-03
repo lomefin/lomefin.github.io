@@ -27,14 +27,26 @@ baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://leonardo.luarte.cl" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: lomefin
 github_username:  lomefin
-mardown: GFM
+
+kramdown:
+  syntax_highlighter: coderay
+  enable_coderay: true
+
 # Build settings
 theme: minima
 plugins:
   - jekyll-feed
   - jekyll-seo-tag
+  - kramdown-syntax-coderay
 google_analytics: G-5YPX5MG51C
+minima:
+  date_format: "%b %-d, %Y"
 
+  # generate social links in footer
+  social_links:
+    twitter: lomefin
+    github:  lomefin
+  skin: dark
 
 # Exclude from processing.
 # The following items will not be processed, by default.

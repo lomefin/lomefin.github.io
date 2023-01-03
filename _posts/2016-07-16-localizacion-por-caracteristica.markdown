@@ -11,11 +11,15 @@ Es por esto que Rails tiene considerado como un elemento principal la internacio
 
 Por ejemplo, en vez de colocar un título de la siguiente manera:
 
-	<h1>Noticias más recientes</h1>
+```html
+<h1>Noticias más recientes</h1>
+```
 
 Se puede internacionalizar así:
 
-	<h1><%= t(".most_recent_stories") %></h1>
+```erb
+<h1><%= t(".most_recent_stories") %></h1>
+```
 
 Esto nos colocará en un comienzo un texto que dirá "Most Recent Stories" y que si pasamos el mouse sobre él nos indicará que falta una etiqueta en el idioma.
 
@@ -25,17 +29,21 @@ En la carpeta config/locales/ estarán archivos yml en donde puedes crear las tr
 
 en.yml
 
-	en:
-		welcome:
-			index:
-				most_recent_stories: Most recent stories
+```yaml
+en:
+	welcome:
+		index:
+			most_recent_stories: Most recent stories
+```
 
 es.yml
 
-	es:
-		welcome:
-			index:
-				most_recent_stories: Noticias más recientes
+```yaml
+es:
+	welcome:
+		index:
+			most_recent_stories: Noticias más recientes
+```
 
 En verdad es una maravilla!
 
@@ -51,19 +59,21 @@ Un ejemplo corto, para una nueva característica
 
 en-US.yml
 
-	en:
-		plays_feed:
-			add_to_calendar: Add to my calendar
-			find_venue: Find closest Theater
+```yaml
+en:
+	plays_feed:
+		add_to_calendar: Add to my calendar
+		find_venue: Find closest Theater
+```
 
 en-GB.yml
 
-	en:
-		plays_feed:
-			add_to_calendar: Add to my calendar
-			find_venue: Find closes Theatre
-
-
+```yaml
+en:
+	plays_feed:
+		add_to_calendar: Add to my calendar
+		find_venue: Find closes Theatre
+```
 
 Si ya estás permanentemente peleando con tu propio código, hay algo que se debe hacer.
 
@@ -75,11 +85,13 @@ Devise en un sistema de control de acceso y el genera sus propias vistas, que vi
 
 devise.es.yml Tiene la siguiente estructura:
 
-	es:
-		devise:
-			sessions:
-				new:
-					login: Ingresar
+```yaml
+es:
+	devise:
+		sessions:
+			new:
+				login: Ingresar
+```
 
 Exactamente igual que el archivo de i18n que vimos, pues YML combina todas las llaves y luego las deja disponibles.
 Entonces, por qué no consideramos las características cada una como un nuevo prefijo para el idioma, reciclamos la gran mayoría de los textos y cambiamos la diferencias? Aquí podemos explotar la capacidad de hacer referencias en YAML.
@@ -88,15 +100,17 @@ Volviendo al ejemplo de los teatros
 
 plays_feed.en.yml
 
-	en-US:
-		plays_feed: &plays_feed
-			add_to_calendar: Add to calendar
-			find_venue: Find closest theater
+```yaml
+en-US:
+	plays_feed: &plays_feed
+		add_to_calendar: Add to calendar
+		find_venue: Find closest theater
 
-	en-GB:
-		play_feed:
-			<<: *plays_feed                             # Agrego los campos definidos anteriormente
-			find_venue: Find closes theatre   # Sobreescribo solo los campos que difieren.
+en-GB:
+	play_feed:
+		<<: *plays_feed                   # Agrego los campos definidos anteriormente
+		find_venue: Find closes theatre   # Sobreescribo solo los campos que difieren.
+```
 
 Esta metodología que estamos ahora ocupando nos ha sido de mucha utilidad, pues generalmente la gran cantidad de cambios vienen definidos por característica y en sus primeras etapas, con el tiempo el texto se consolida y no cambia mucho por lo que no tiene mucho sentido tener un archivo monolítico con todas las llaves que deba ir recibiendo cambios en secciones muy específicas.
 

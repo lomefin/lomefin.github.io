@@ -11,8 +11,8 @@ Ahora ya que podemos ver resultados en el sistema, haremos un administrador para
 
 Primero haremos el namespace de administración.
 
-routes.rb
-{% highlight ruby %}
+`routes.rb`
+```ruby
 Rails.application.routes.draw do
   namespace :admin do
     resources :posts, param: :uuid do
@@ -27,7 +27,7 @@ Rails.application.routes.draw do
     resources :posts, only: [:show, :index], param: :uuid
   end
 end
-{% endhighlight %}
+```
 
 Dos cosas importantes:
   - El namespace admin lo estoy colocando antes, pues aquí usamos un scope que sirve como variable, si lo colocamos después Rails considerará que admin es un canal.
@@ -35,21 +35,20 @@ Dos cosas importantes:
 
 Podría trabajar en el administrador con los ids en vez de los uuid, pero esto hace más fácil que si tienes un problema en la vista de lectura, puedas encontrar la noticia más rápidamente.
 
-Ahora debemos crear el controlador
-```
-rails g controller admin/posts
-```
+Ahora debemos crear el controlador `rails g controller admin/posts`
 
 Pero antes de implementar el controlador, agregaremos otro, un BaseController, que nos permitirá colocarle reglas especiales a los controladores de Admin (por ejemplo, autenticación). Teniendo controladores base por namespace nos permitirá tener distintas reglas en cada uno de ellos, lo que puede ser muy cómodo.
 
-admin/base_controller.rb
-{% highlight ruby %}
+`admin/base_controller.rb`
+
+```ruby
 class Admin::BaseController < ApplicationController
 end
-{% endhighlight %}
+```
 
-admin/posts_controller.rb
-{% highlight ruby %}
+`admin/posts_controller.rb`
+
+```ruby
 class Admin::PostsController < Admin::BaseController
   before_action :set_post, only: [:show, :edit, :update, :destroy, :publish, :unpublish]
   def index
@@ -105,11 +104,11 @@ class Admin::PostsController < Admin::BaseController
   end
 end
 
-{% endhighlight %}
+```
 
 Obviamente, con tanto escribir olvidé la estructura de Post, pero en vez de ir a revisar al schema pueda preguntar en la consola.
 
-```
+```bash
 show-model Post
 
 Post
@@ -130,7 +129,7 @@ Post
 
 También podemos fijarnos que el modelo de Post tiene unos metodos adicionales: __publish!__ y __unpublish!__ asi que debemos implementarlos y como estamos trabajando con UUID sería bueno asegurarnos que exista al crearse el objeto.
 
-{% highlight ruby %}
+```ruby
 class Post < ApplicationRecord
   before_validation :check_uuid
   validates :uuid, uniqueness: true, presence: true
@@ -158,12 +157,13 @@ class Post < ApplicationRecord
     self.uuid = uuid
   end
 end
-{% endhighlight %}
+```
 
 Y ahora finalmente agregamos los templates.
 
-index.html.erb
-{% highlight erb %}
+`index.html.erb`
+
+```erb
 <h1>Posts</h1>
 <ul class="nms-post-list">
   <%= render partial: "post", collection: @posts %>
@@ -171,19 +171,21 @@ index.html.erb
 <ul class="nms-posts-actions">
   <li><%= link_to "New post", new_admin_post_path %></li>
 </ul>
-{% endhighlight %}
+```
 
-_post.html.erb
-{% highlight erb %}
+`_post.html.erb`
+
+```erb
 <li class="nms-post-list-item">
   <%= link_to admin_post_path(uuid: post.uuid) do %>
     <%= post.title %>
   <% end %>
 </li>
-{% endhighlight %}
+```
 
-show.html.erb
-{% highlight erb %}
+`show.html.erb`
+
+```erb
 <article class="nms-post" data-uuid="<%= @post.uuid %>">
   <h1 class="nms-post-title"><%= @post.title %></h1>
   <p class="nms-post-header">
@@ -204,10 +206,11 @@ show.html.erb
   <% end %>
   <li><%= link_to 'All posts', admin_posts_path %></li>
 </ul>
-{% endhighlight %}
+```
 
-_form.html.erb
-{% highlight erb %}
+`_form.html.erb`
+
+```erb
 <%= form_for [:admin, post] do |p| %>
   <%= p.label :channel %>
   <%= p.text_field :channel %> <br />
@@ -219,26 +222,28 @@ _form.html.erb
   <%= p.text_field :url %> <br />
   <%= submit_tag  %>
 <% end %>
-{% endhighlight %}
+```
 
-edit.html.erb
-{% highlight erb %}
+`edit.html.erb`
+
+```erb
 <%= render partial: "form", locals: {post: @post} %>
 
 <ul class="nms-edit-post-options">
   <li><%= link_to 'Back',  admin_post_path(uuid: @post.uuid) %></li>
   <li><%= link_to 'All posts', admin_posts_path %></li>
 </ul>
-{% endhighlight %}
+```
 
-new.html.erb
-{% highlight erb %}
+`new.html.erb`
+
+```erb
 <%= render partial: "form", locals: {post: Post.new } %>
 
 <ul class="nms-new-post-options">
   <li><%= link_to 'Back', admin_posts_path %></li>
 </ul>
-{% endhighlight %}
+```
 
 La siguiente parte del tutorial considera el aprovechar un nuevo feature de Rails 5: ActionCable, luego seguiremos con cosas más convencionales: agregarle seguridad al sistema y en la última etapa le agregaremos un poco de estilo para que no se vea tan simplón.
 
