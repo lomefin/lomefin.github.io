@@ -1,0 +1,55 @@
+---
+---
+
+@import "https://unpkg.com/open-props";
+@import "https://unpkg.com/open-props/normalize.min.css";
+// @import "https://unpkg.com/open-props/buttons.min.css";
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@200;400;700&family=PT+Mono&family=Ubuntu+Mono&display=swap');
+
+:root {
+  --surface-1: var(--sand-12);
+  --font-sans: Lexend, Ubuntu, Roboto, Noto Sans;
+}
+
+:where(h1, h2, h3, h4, h5, h6) {
+  font-weight: var(--font-weight-4);
+}
+
+main {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 80rem;
+}
+
+section {
+  margin-bottom: 5rem;
+  h2 { margin-bottom: 2rem; }
+
+  
+}
+
+.hero-unit {
+  background-color: white;
+  color: black;
+  h1 { color: #de4a2c; }
+  box-shadow: 0 0 0 100vmax white;
+  clip-path: polygon(-100vmax 0, 100vmax 0, 100vmax 100%, -100vmax 100%);
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: flex-end;
+
+  img {
+    max-height: 15rem;
+  }
+  article {
+    padding-bottom: 1rem;
+  }
+}
+.experience-card {
+  width: 50ch;
+  border: 1px solid var(--sand-8);
+
+  padding: 1rem 2ch;
+}
